@@ -29,6 +29,12 @@ public class ReleaseManagerServiceImpl implements ReleaseManagerService {
                     .name(serviceName)
                     .build();
             serviceRepository.save(service);
+        } else {
+            // check if service with serviceVersionNumber has already been deployed previously
+            SystemVersion serviceRecord = systemVersionRepository.findSystemVersionByServiceAndServiceVersion(service, serviceVersionNumber);
+            if (serviceRecord != null) {
+                return systemVersionRepository.getCurrentSystemVersion().intValue();
+            }
         }
         SystemVersion systemVersionEntity = SystemVersion.builder()
                 .service(service)
